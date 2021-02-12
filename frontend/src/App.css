@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+#title {
+  font-family: "Lobster";
+}
+
+.love-button {
+  border-radius: 1000px;
+  padding: 2rem 3rem;
+  font-size: 30px;
+  font-family: "Lobster";
+  background: transparent;
+  color: #d9534f;
+  border: 3px solid #d9534f;
+  transition: all 500ms;
+}
+
+.love-button:hover {
+  background-color: #d9534f;
+  color: #ffffff
+}
