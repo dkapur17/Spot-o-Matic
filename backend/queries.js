@@ -17,6 +17,15 @@ const setPreferences = (req, res) => {
     });
 }
 
+const getPreferences = (req,res) =>{
+    const { id } = req.body;
+    pool.query(`SELECT * FROM preferences WHERE id = '${id}'`, (err, result)=>{
+        if(err) return res.send(err);
+        res.send(result.rows);
+    })
+}
+
 module.exports = {
-    setPreferences
+    setPreferences,
+    getPreferences
 };

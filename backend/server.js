@@ -13,6 +13,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors());
 
 app.post('/setPreferences', queries.setPreferences);
+app.post('/getPreferences', queries.getPreferences);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
