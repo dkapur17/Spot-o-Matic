@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useHistory } from 'react-router-dom';
 import TinderCard from 'react-tinder-card';
 import { nanoid } from 'nanoid'
+import axios from 'axios';
 
 const NewSearch = () => {
     return (
@@ -70,6 +71,8 @@ const CardsWrapper = () => {
 
         const sendPreferences = async () => {
             // TODO: Makes api call to backend
+            const res = await axios.post('http://localhost:5000/setPreferences',preferences);
+            console.log(res.data);
             console.log(preferences);
             history.push(`/showLink/${preferences.id}`);
         }
