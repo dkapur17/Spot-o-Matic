@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import TinderCard from 'react-tinder-card';
 import { nanoid } from 'nanoid'
 import axios from 'axios';
+import swal from 'sweetalert';
 
 const NewSearch = () => {
     return (
@@ -45,25 +46,27 @@ const CardsWrapper = () => {
         id: nanoid(10),
         eatingOut: {
             score: 0,
-            varaints: ''
+            variants: ''
         },
         clubbing: {
             score: 0,
-            varaints: ''
+            variants: ''
         },
         playingGames: {
             score: 0,
-            varaints: ''
+            variants: ''
         },
         watchingMovies: {
             score: 0,
-            varaints: ''
+            variants: ''
         },
         leisureTime: {
             score: 0,
-            varaints: ''
+            variants: ''
         },
     });
+
+    const [loading, setLoading] = useState(false);
 
     const history = useHistory();
 
@@ -71,10 +74,18 @@ const CardsWrapper = () => {
 
         const sendPreferences = async () => {
             // TODO: Makes api call to backend
-            const res = await axios.post('http://localhost:5000/setPreferences',preferences);
-            console.log(res.data);
-            console.log(preferences);
-            history.push(`/showLink/${preferences.id}`);
+            try {
+                setLoading(true);
+                const res = await axios.post('http://localhost:5000/setPreferences', preferences);
+                console.log(res.data);
+                console.log(preferences);
+                setLoading(false);
+                history.push(`/showLink/${preferences.id}`);
+            }
+            catch {
+                swal("Error!", "Unable to write to the Database. Please try again later.", "error");
+                history.push('/');
+            }
         }
 
         if (!cardData.length)
@@ -89,19 +100,19 @@ const CardsWrapper = () => {
                 setCardData((currentCardData) => currentCardData.filter(cardItem => cardItem !== item));
                 switch (item) {
                     case "Eating Out":
-                        setPreferences((currentPreferences) => ({ ...currentPreferences, eatingOut: { score: currentPreferences.eatingOut.score + 1, varaints: '' } }));
+                        setPreferences((currentPreferences) => ({ ...currentPreferences, eatingOut: { score: currentPreferences.eatingOut.score + 1, variants: '' } }));
                         break;
                     case "Clubbing":
-                        setPreferences((currentPreferences) => ({ ...currentPreferences, clubbing: { score: currentPreferences.clubbing.score + 1, varaints: '' } }));
+                        setPreferences((currentPreferences) => ({ ...currentPreferences, clubbing: { score: currentPreferences.clubbing.score + 1, variants: '' } }));
                         break;
                     case "Games/Sports":
-                        setPreferences((currentPreferences) => ({ ...currentPreferences, playingGames: { score: currentPreferences.playingGames.score + 1, varaints: '' } }));
+                        setPreferences((currentPreferences) => ({ ...currentPreferences, playingGames: { score: currentPreferences.playingGames.score + 1, variants: '' } }));
                         break;
                     case "Leisure Time":
-                        setPreferences((currentPreferences) => ({ ...currentPreferences, leisureTime: { score: currentPreferences.leisureTime.score + 1, varaints: '' } }));
+                        setPreferences((currentPreferences) => ({ ...currentPreferences, leisureTime: { score: currentPreferences.leisureTime.score + 1, variants: '' } }));
                         break;
                     case "Watching Movies":
-                        setPreferences((currentPreferences) => ({ ...currentPreferences, watchingMovies: { score: currentPreferences.watchingMovies.score + 1, varaints: '' } }));
+                        setPreferences((currentPreferences) => ({ ...currentPreferences, watchingMovies: { score: currentPreferences.watchingMovies.score + 1, variants: '' } }));
                         break;
                     default:
                         break;
@@ -112,42 +123,48 @@ const CardsWrapper = () => {
             setCardData((currentCardData) => currentCardData.filter(cardItem => cardItem !== item));
             if (direction === 'right') {
                 if (lists["Eating Out"].includes(item))
-                    setPreferences((currentPreferences) => ({ ...currentPreferences, eatingOut: { score: currentPreferences.eatingOut.score, varaints: currentPreferences.eatingOut.varaints + item + '-' } }));
+                    setPreferences((currentPreferences) => ({ ...currentPreferences, eatingOut: { score: currentPreferences.eatingOut.score, variants: currentPreferences.eatingOut.variants + item + '-' } }));
                 else if (lists["Clubbing"].includes(item))
-                    setPreferences((currentPreferences) => ({ ...currentPreferences, clubbing: { score: currentPreferences.clubbing.score, varaints: currentPreferences.clubbing.varaints + item + '-' } }));
+                    setPreferences((currentPreferences) => ({ ...currentPreferences, clubbing: { score: currentPreferences.clubbing.score, variants: currentPreferences.clubbing.variants + item + '-' } }));
                 else if (lists["Games/Sports"].includes(item))
-                    setPreferences((currentPreferences) => ({ ...currentPreferences, playingGames: { score: currentPreferences.playingGames.score, varaints: currentPreferences.playingGames.varaints + item + '-' } }));
+                    setPreferences((currentPreferences) => ({ ...currentPreferences, playingGames: { score: currentPreferences.playingGames.score, variants: currentPreferences.playingGames.variants + item + '-' } }));
                 else if (lists["Leisure Time"].includes(item))
-                    setPreferences((currentPreferences) => ({ ...currentPreferences, leisureTime: { score: currentPreferences.leisureTime.score, varaints: currentPreferences.leisureTime.varaints + item + '-' } }));
+                    setPreferences((currentPreferences) => ({ ...currentPreferences, leisureTime: { score: currentPreferences.leisureTime.score, variants: currentPreferences.leisureTime.variants + item + '-' } }));
                 else if (lists["Watch Movies"].includes(item))
-                    setPreferences((currentPreferences) => ({ ...currentPreferences, watchingMovies: { score: currentPreferences.watchingMovies.score, varaints: currentPreferences.watchingMovies.varaints + item + '-' } }));
+                    setPreferences((currentPreferences) => ({ ...currentPreferences, watchingMovies: { score: currentPreferences.watchingMovies.score, variants: currentPreferences.watchingMovies.variants + item + '-' } }));
             }
 
         }
     }
 
-    return (
-        <div
-            className='cardContainer row justify-content-center mt-5'>
-            {cardData.map((item, i) =>
-                <TinderCard
-                    key={Math.random()}
-                    className='swipe'
-                    preventSwipe={['up', 'down']}
-                    onCardLeftScreen={(direction) => handleCardLeavingScreen(direction, item)}
-                >
-                    <div className="card text-white bg-danger mb-3" style={{ width: "40rem", height: "30rem" }}>
-                        <div className="card-header text-center">
-                            <p className="lead">Do you like...</p>
-                        </div>
-                        <div className="card-body d-flex flex-column justify-content-center">
-                            <h1 className="card-title display-1 text-center">{item}</h1>
-                        </div>
-                    </div>
-                </TinderCard>
-            )}
+    return loading ?
+        <div className="row justify-content-center mt-5">
+            <div className="spinner-border text-danger" role="status" style={{ width: "5rem", height: "5rem" }}>
+                <span className="sr-only">Loading...</span>
+            </div>
         </div>
-    )
+        : (
+            <div
+                className='cardContainer row justify-content-center mt-5'>
+                {cardData.map((item, i) =>
+                    <TinderCard
+                        key={Math.random()}
+                        className='swipe'
+                        preventSwipe={['up', 'down']}
+                        onCardLeftScreen={(direction) => handleCardLeavingScreen(direction, item)}
+                    >
+                        <div className="card text-white bg-danger mb-3" style={{ width: "40rem", height: "30rem" }}>
+                            <div className="card-header text-center">
+                                <p className="lead">Do you like...</p>
+                            </div>
+                            <div className="card-body d-flex flex-column justify-content-center">
+                                <h1 className="card-title display-1 text-center">{item}</h1>
+                            </div>
+                        </div>
+                    </TinderCard>
+                )}
+            </div>
+        )
 }
 
 export default NewSearch;
