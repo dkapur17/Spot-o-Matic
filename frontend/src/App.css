@@ -4,6 +4,12 @@
   font-family: "Lobster";
 }
 
+html,
+body {
+  overflow: hidden;
+  min-height: 100vh;
+}
+
 .love-button {
   border-radius: 1000px;
   padding: 2rem 3rem;
@@ -18,4 +24,55 @@
 .love-button:hover {
   background-color: #d9534f;
   color: #ffffff
+}
+
+.love-input {
+  padding: 0.75rem 1.5rem;
+  width: 20rem;
+  border-radius: 1000px;
+  font-size: 20px;
+  border: 3px solid #d9534f;
+}
+
+.love-input:focus {
+  outline: none;
+}
+
+.arrow-button {
+  border-radius: 2rem;
+  width: 4rem;
+  height: 4rem;
+  font-size: 2rem;
+  background: transparent;
+  border: 3px solid #d9534f;
+  transition: 500ms;
+}
+
+.arrow-button:hover {
+  background-color: #d9534f;
+}
+
+.swipe {
+  position: absolute;
+}
+
+.swipe:hover {
+  cursor: pointer;
+}
+
+.card-title {
+  font-family: "Lobster";
+}
+
+.copyable-link {
+  background: transparent;
+  border: none;
+}
+
+.copyable-link:hover {
+  cursor: pointer;
+}
+
+.copyable-link:focus {
+  outline: none;
 }

@@ -11,8 +11,8 @@ const Home = () => {
             className='container my-5 justify-content-center pt-5'
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 1 }}
-
         >
             <h1 className='display-1 text-center text-danger' id='title'>Spot-💖-Matic</h1>
             <div className="pt-5">
