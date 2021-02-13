@@ -1,15 +1,30 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import swal from 'sweetalert';
 
 const Continue = () => {
 
     const [code, setCode] = useState('');
+    const [loading, setLoading] = useState(false);
+    const history = useHistory();
 
-    const submitCode = () => {
-        console.log(code);
-        // Make axios call to backend and verify the code
-        // If incorrect, show alert.
-        // If correct, take them to /search/code
+    const submitCode = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.post('http://localhost:5000/getPreferences', { id: code });
+            if (!res.data.length)
+                swal({ title: "Invalid Code!", icon: "error" });
+            else
+                history.push(`/search/continue/${code}`, { preferences: res.data[0] });
+        }
+        catch (err) {
+            console.log(err);
+        }
+        finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -28,7 +43,14 @@ const Continue = () => {
             </p>
             <div className="row justify-content-center mt-5 py-5">
                 <input className='love-input text-center mx-1' value={code} onChange={({ target }) => setCode(target.value)}></input>
-                <button className='mx-1 arrow-button' onClick={submitCode}>✔️</button>
+                {
+                    loading ?
+                        <div className="spinner-border text-danger mt-3" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                        :
+                        <button className='mx-1 arrow-button' onClick={submitCode}>✔️</button>
+                }
             </div>
         </motion.div>
     )

@@ -12,6 +12,7 @@ import New from './components/New'
 import Continue from './components/Continue'
 import NewSearch from './components/NewSearch'
 import ShowCode from './components/ShowCode'
+import ContinueSearch from './components/ContinueSearch';
 
 const App = () => {
   const location = useLocation();
@@ -22,7 +23,7 @@ const App = () => {
         <Route path='/new' exact component={New} />
         <Route path='/continue' exact component={Continue} />
         <Route path='/search/new' exact component={NewSearch} />
-        {/* <Route path='/search/continue/:code' exact component={ContinueSearch} /> */}
+        <Route path='/search/continue/:code' exact component={ContinueSearch} />
         <Route path='/showLink/:code' exact component={ShowCode} />
       </Switch>
     </AnimatePresence>

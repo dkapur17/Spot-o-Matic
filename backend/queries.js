@@ -6,7 +6,6 @@ var connectionString = "postgres://alpha:Hackathons123@free-tier.gcp-us-central1
 var pool = new pg.Pool({ connectionString });
 
 const setPreferences = (req, res) => {
-    console.log(req.body);
     const { id, eatingOut, clubbing, playingGames, watchingMovies, leisureTime } = req.body;
     const query = `INSERT INTO preferences VALUES ('${id}', ${eatingOut.score}, '${eatingOut.variants}', ${clubbing.score}, '${clubbing.variants}', ${playingGames.score}, '${playingGames.variants}', ${watchingMovies.score}, '${watchingMovies.variants}', ${leisureTime.score}, '${leisureTime.variants}');`;
 
@@ -17,10 +16,10 @@ const setPreferences = (req, res) => {
     });
 }
 
-const getPreferences = (req,res) =>{
+const getPreferences = (req, res) => {
     const { id } = req.body;
-    pool.query(`SELECT * FROM preferences WHERE id = '${id}'`, (err, result)=>{
-        if(err) return res.send(err);
+    pool.query(`SELECT * FROM preferences WHERE id = '${id}'`, (err, result) => {
+        if (err) return res.send(err);
         res.send(result.rows);
     })
 }

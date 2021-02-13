@@ -2,11 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useHistory } from 'react-router-dom';
 import TinderCard from 'react-tinder-card';
-import { nanoid } from 'nanoid'
-import axios from 'axios';
-import swal from 'sweetalert';
 
-const NewSearch = () => {
+const ContinueSearch = (props) => {
+    const { preferences } = props.location.state;
     return (
         <motion.div
             className='container mt-2 justify-content-center'
@@ -15,14 +13,15 @@ const NewSearch = () => {
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 1 }}
         >
-            <h1 className='display-1 text-center text-danger mb-2' id='title'>Help Us Help You!</h1>
+            <h1 className='display-1 text-center text-danger mb-2' id='title'>Its the Finishing Lap!</h1>
             <p className='lead text-danger text-center'>Swipe RIGHT if you're interested or LEFT if you're not.</p>
-            <CardsWrapper />
+            <CardsWrapper pref={preferences} />
         </motion.div>
     )
 };
 
-const CardsWrapper = () => {
+
+const CardsWrapper = ({ pref }) => {
 
     const lists = {
         'Watch Movies': [],
@@ -43,52 +42,39 @@ const CardsWrapper = () => {
     ]);
 
     const [preferences, setPreferences] = useState({
-        id: nanoid(10),
+        id: pref.id,
         eatingOut: {
-            score: 0,
-            variants: ''
+            score: parseInt(pref.eatingoutscore),
+            variants: pref.eatingoutstring
         },
         clubbing: {
-            score: 0,
-            variants: ''
+            score: parseInt(pref.clubbingscore),
+            variants: pref.clubbingstring
         },
         playingGames: {
-            score: 0,
-            variants: ''
+            score: parseInt(pref.playinggamescore),
+            variants: pref.playinggamestring
         },
         watchingMovies: {
-            score: 0,
-            variants: ''
+            score: parseInt(pref.watchingmoviescore),
+            variants: pref.watchinmoviestring
         },
         leisureTime: {
-            score: 0,
-            variants: ''
+            score: parseInt(pref.leisuretimescore),
+            variants: pref.leisuretimestring
         },
     });
-
-    const [loading, setLoading] = useState(false);
 
     const history = useHistory();
 
     useEffect(() => {
 
-        const sendPreferences = async () => {
-            try {
-                setLoading(true);
-                const res = await axios.post('http://localhost:5000/setPreferences', preferences);
-                console.log(res.data);
-                console.log(preferences);
-                setLoading(false);
-                history.push(`/showLink/${preferences.id}`);
-            }
-            catch {
-                swal("Error!", "Unable to write to the Database. Please try again later.", "error");
-                history.push('/');
-            }
+        const computePreferences = async () => {
+            console.log(preferences);
         }
 
         if (!cardData.length)
-            sendPreferences();
+            computePreferences();
     }, [cardData, preferences, history]);
 
     const handleCardLeavingScreen = (direction, item) => {
@@ -136,34 +122,31 @@ const CardsWrapper = () => {
         }
     }
 
-    return loading ?
-        <div className="row justify-content-center mt-5">
-            <div className="spinner-border text-danger" role="status" style={{ width: "5rem", height: "5rem" }}>
-                <span className="sr-only">Loading...</span>
-            </div>
-        </div>
-        : (
-            <div
-                className='cardContainer row justify-content-center mt-5'>
-                {cardData.map((item, i) =>
-                    <TinderCard
-                        key={Math.random()}
-                        className='swipe'
-                        preventSwipe={['up', 'down']}
-                        onCardLeftScreen={(direction) => handleCardLeavingScreen(direction, item)}
-                    >
-                        <div className="card text-white bg-danger mb-3" style={{ width: "40rem", height: "30rem" }}>
-                            <div className="card-header text-center">
-                                <p className="lead">Do you like...</p>
-                            </div>
-                            <div className="card-body d-flex flex-column justify-content-center">
-                                <h1 className="card-title display-1 text-center">{item}</h1>
-                            </div>
+    return (
+        <div
+            className='cardContainer row justify-content-center mt-5'>
+            {cardData.map((item, i) =>
+                <TinderCard
+                    key={Math.random()}
+                    className='swipe'
+                    preventSwipe={['up', 'down']}
+                    onCardLeftScreen={(direction) => handleCardLeavingScreen(direction, item)}
+                >
+                    <div className="card text-white bg-danger mb-3" style={{ width: "40rem", height: "30rem" }}>
+                        <div className="card-header text-center">
+                            <p className="lead">Do you like...</p>
                         </div>
-                    </TinderCard>
-                )}
-            </div>
-        )
-}
+                        <div className="card-body d-flex flex-column justify-content-center">
+                            <h1 className="card-title display-1 text-center">{item}</h1>
+                        </div>
+                    </div>
+                </TinderCard>
+            )}
+        </div>
+    )
 
-export default NewSearch;
+
+};
+
+
+export default ContinueSearch;

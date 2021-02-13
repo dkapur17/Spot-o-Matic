@@ -16,7 +16,7 @@ const ShowCode = (props) => {
         swal({
             text: 'Code Copied!',
             timer: 1000,
-            type: "success",
+            icon: "success",
             buttons: false
         });
     }
