@@ -1,5 +1,12 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { motion } from 'framer-motion'
+
+
+const iframeStyle = {
+    border: "3px solid #d9534f",
+    borderRadius: "10px"
+};
 
 const DisplayResults = (props) => {
     const [numMaps, setNumMaps] = useState(1)
@@ -10,54 +17,55 @@ const DisplayResults = (props) => {
     }
 
     const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+    const history = useHistory();
 
     const filterQueries = (act) => {
         const variants = act.variants.split('-');
 
-        let max_occur = {key: '', freq: -1};
+        let max_occur = { key: '', freq: -1 };
 
-        for(let i = 0; i < variants.length; i++){
+        for (let i = 0; i < variants.length; i++) {
             let count = countOccurrences(variants, variants[i])
-            if(count > max_occur.freq)
-                max_occur = {key: variants[i], freq: count}
+            if (count > max_occur.freq)
+                max_occur = { key: variants[i], freq: count }
         }
 
-        if(max_occur.freq === 1){
-            if(variants.length > 1){
+        if (max_occur.freq === 1) {
+            if (variants.length > 1) {
                 setNumMaps(2);
                 let query1 = variants[0].split(' ').join('+');
                 let query2 = variants[1].split(' ').join('+');
-                
+
                 setMapQuery([query1, query2])
-                
-            }else{
+
+            } else {
                 let query1 = variants[0].split(' ').join('+');
                 setMapQuery([query1])
             }
-        }else{
+        } else {
             let query1 = max_occur.key.split(' ').join('+');
             setMapQuery([query1])
-        } 
+        }
     }
 
     useEffect(() => {
         const Analyzer = () => {
             let raw = props.location.state.preferences
-            let data = [{key:'eatingOut', ...raw.eatingOut}, 
-                        {key:'leisureTime', ...raw.leisureTime}, 
-                        {key:'playingGames' , ...raw.playingGames}, 
-                        {key:'clubbing', ...raw.clubbing}, 
-                        {key:'watchingMovies', ...raw.watchingMovies}]
-            
+            let data = [{ key: 'eatingOut', ...raw.eatingOut },
+            { key: 'leisureTime', ...raw.leisureTime },
+            { key: 'playingGames', ...raw.playingGames },
+            { key: 'clubbing', ...raw.clubbing },
+            { key: 'watchingMovies', ...raw.watchingMovies }]
+
             data.sort(sortScore)
 
             const best = data.filter(activity => activity.score >= 2)
-            if(best !== []){
+            if (best !== []) {
                 filterQueries(best[0]);
                 return;
             }
             const med = data.filter(activity => activity.score === 1)
-            if(med !== []){
+            if (med !== []) {
                 filterQueries(med[0]);
                 return;
             }
@@ -66,7 +74,7 @@ const DisplayResults = (props) => {
         Analyzer();
     }, [])
 
-    return(
+    return (
         <motion.div
             className='container my-5 justify-content-center'
             initial={{ y: 100, opacity: 0 }}
@@ -74,35 +82,38 @@ const DisplayResults = (props) => {
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 1 }}
         >
-            <h1 id='title' className='text-danger text-center display-3'>Here Are Your Results</h1>
-            {mapQuery.length === 0 ? 
+            <h1 id='title' className='text-danger text-center display-3 mb-5'>Spot-💖-Matic suggests...</h1>
+            {mapQuery.length === 0 ?
                 (
-                    <div className="d-flex justify-content-center" style={{marginTop: '20rem'}}>
+                    <div className="d-flex justify-content-center" style={{ marginTop: '20rem' }}>
                         <div className="spinner-grow text-primary" role="status">
                             <span className="sr-only">Loading...</span>
                         </div>
                     </div>
-                ): numMaps === 1 ? (
+                ) : numMaps === 1 ? (
                     <div className='row justify-content-center'>
                         <div>
-                            <iframe  width="500" height="450" frameBorder="0" style={{ border: 0 }} title={`${mapQuery[0]}`} className="embed-responsive-item" src={`https://www.google.com/maps/embed/v1/search?q=${mapQuery[0]}+near+me&key=AIzaSyBDrcQI8xe9_Z2_mxlySTZqEQO8RtZHS1Q`} allowFullScreen></iframe>
+                            <iframe width="500" height="400" frameBorder="0" style={iframeStyle} title={`${mapQuery[0]}`} className="embed-responsive-item" src={`https://www.google.com/maps/embed/v1/search?q=${mapQuery[0]}+near+me&key=AIzaSyBDrcQI8xe9_Z2_mxlySTZqEQO8RtZHS1Q`} allowFullScreen></iframe>
                             <p className="text-danger text-center lead">SUGGESTED SPOTS: {mapQuery[0].split('+').join(' ').toUpperCase()}</p>
                         </div>
                     </div>
-                ): (
-                    <div className='row justify-content-around'>
-                        <div className="col">
-                            <iframe  width="500" height="450" frameBorder="0" style={{ border: 0 }} title={`${mapQuery[0]}`} className="embed-responsive-item" src={`https://www.google.com/maps/embed/v1/search?q=${mapQuery[0]}+near+me&key=AIzaSyBDrcQI8xe9_Z2_mxlySTZqEQO8RtZHS1Q`} allowFullScreen></iframe>
-                            <p className="text-danger text-center lead">SUGGESTED SPOTS: {mapQuery[0].split('+').join(' ').toUpperCase()}</p>
+                ) : (
+                        <div className='row justify-content-around'>
+                            <div className="col">
+                                <iframe width="500" height="400" frameBorder="0" style={iframeStyle} title={`${mapQuery[0]}`} className="embed-responsive-item" src={`https://www.google.com/maps/embed/v1/search?q=${mapQuery[0]}+near+me&key=AIzaSyBDrcQI8xe9_Z2_mxlySTZqEQO8RtZHS1Q`} allowFullScreen></iframe>
+                                <p className="text-danger text-center lead">SUGGESTED SPOTS: {mapQuery[0].split('+').join(' ').toUpperCase()}</p>
+                            </div>
+                            <div className="col">
+                                <iframe width="500" height="400" frameBorder="0" style={iframeStyle} title={`${mapQuery[1]}`} className="embed-responsive-item" src={`https://www.google.com/maps/embed/v1/search?q=${mapQuery[1]}+near+me&key=AIzaSyBDrcQI8xe9_Z2_mxlySTZqEQO8RtZHS1Q`} allowFullScreen></iframe>
+                                <p className="text-danger text-center lead">SUGGESTED SPOTS: {mapQuery[1].split('+').join(' ').toUpperCase()}</p>
+                            </div>
                         </div>
-                        <div className="col">
-                            <iframe  width="500" height="450" frameBorder="0" style={{ border: 0 }} title={`${mapQuery[1]}`} className="embed-responsive-item" src={`https://www.google.com/maps/embed/v1/search?q=${mapQuery[1]}+near+me&key=AIzaSyBDrcQI8xe9_Z2_mxlySTZqEQO8RtZHS1Q`} allowFullScreen></iframe>
-                            <p className="text-danger text-center lead">SUGGESTED SPOTS: {mapQuery[1].split('+').join(' ').toUpperCase()}</p>
-                        </div>    
-                    </div>
-                )
-            } 
-        </motion.div>
+                    )
+            }
+            <div className="row justify-content-center">
+                < button className="love-button" onClick={() => history.push('/')}>Another Search?</button>
+            </div>
+        </motion.div >
     )
 }
 
