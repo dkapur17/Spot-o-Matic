@@ -26,4 +26,4 @@ It starts with one partner looking for something to do on their next date. They 
 
 ### Getting Technical
 
-The UI is created in React. It interfaces with a CockroachDB database that stores the user preferences through an Express backed.
+The UI is created in React. It interfaces with a CockroachDB database that stores the user preferences through an Express backed. Maps were made possible by the google-maps API.
