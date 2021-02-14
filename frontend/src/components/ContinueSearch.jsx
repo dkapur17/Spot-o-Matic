@@ -71,6 +71,7 @@ const CardsWrapper = ({ pref }) => {
 
         const computePreferences = async () => {
             console.log(preferences);
+            history.push({pathname: '/results', state: {preferences}})
         }
 
         if (!cardData.length)
