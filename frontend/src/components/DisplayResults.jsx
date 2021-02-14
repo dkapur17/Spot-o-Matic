@@ -82,7 +82,7 @@ const DisplayResults = (props) => {
                             <span className="sr-only">Loading...</span>
                         </div>
                     </div>
-                ): mapQuery.length === 1 ? (
+                ): numMaps === 1 ? (
                     <div className='row justify-content-center'>
                         <div>
                             <iframe  width="500" height="450" frameBorder="0" style={{ border: 0 }} title={`${mapQuery[0]}`} className="embed-responsive-item" src={`https://www.google.com/maps/embed/v1/search?q=${mapQuery[0]}+near+me&key=AIzaSyBDrcQI8xe9_Z2_mxlySTZqEQO8RtZHS1Q`} allowFullScreen></iframe>
